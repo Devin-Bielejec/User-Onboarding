@@ -4,7 +4,7 @@ import { withFormik, Form, Field } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 
-function LoginForm({ values, errors, touched, isSubmitting }) {
+function LoginForm({ values, errors, touched, isSubmitting, addUser }) {
     return (
         <Form>
             <div>
@@ -33,12 +33,13 @@ function LoginForm({ values, errors, touched, isSubmitting }) {
 };
 
 const FormikForm = withFormik({
-    mapPropsToValues({name, email, password, tos }) {
+    mapPropsToValues({name, email, password, tos, addUser }) {
         return {
             name: name || "",
             email: email || "",
             password: password || "",
-            tos: tos || false
+            tos: tos || false,
+            addUser: addUser || false
         };
     },
 
@@ -56,7 +57,10 @@ const FormikForm = withFormik({
 
     handleSubmit(values, { resetForm, setErrors, setSubmitting }) {
         axios.post("https://reqres.in/api/users", values)
-        .then(res => console.log(res))
+        .then(res => {
+            console.log(res);
+            console.log(values.addUser(res.data));
+        })
         .catch(err => console.log("ERROR", err));
     }
 })(LoginForm);
